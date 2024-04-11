@@ -1,117 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>MyYoutubeDownloader</title>
+        <link rel="stylesheet" href="/static/styles.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&display=swap">
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="/static/script.js"></script> 
     </head>
-
-    <!--設定圖像及按鈕的Function-->
-    <!--輸入區域大小設定-->
-    <style>
-        #textArea1 {
-            width:500px; 
-            height:300px;
-            font-size:20px;
-            resize: both;
-        }
-
-        #textArea2{
-            width:600px;
-            height:30px;
-            border-radius:25px;
-            font-size:25px;
-            resize: both;
-        }
-    </style>
-    <!--END-->
-
-    <!--字體位置設定-->
-    <style>
-        .center {
-            text-align:center;
-            margin-top:10px; 
-        }
-    </style>
-    <!--END-->
-
-    <!--按鈕位置設定-->
-    <style>
-    .button-container {
-        text-align:center; 
-    }
-    .button-container button{
-        margin:15px; 
-    }
-    </style>
-    <!--END-->
     
-    <!--頁面背景1-->
-    <style>
-    .custom-section {
-        background-color: #000000; 
-        padding:10px;
-        border-radius:20px;
-    }
-    </style>
-    <!--END-->
-
-    <!--字體樣式設定-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&display=swap">
-    <style>
-    body {
-        font-family:'La Belle Aurore', cursive;
-        font-size:25px;
-        margin-left:20px;
-    }
-    </style>
-    <!--END-->
-
-    <!--大標題顏色-->
-    <style>
-        .color-text {
-            color: black;
-            font-size:35px;
-        }
-    </style>
-    <!--END-->
-    <!--EndOfSettings-->
-
-
-    <!--主業面字體背景設定-->    
-    <body
-    text="#ffffff"
-    bgcolor="#E3E8EB">
-    <!--END-->
-
-    <!--網頁標題-->
-    <div class="custom-section">
-    <p>YT-downloader</p>
-    </div>
-    <!--END-->
-
-    <!--大標題-->
-    <p align="center" class="color-text" >Free Online Video Downloader.</h2>
-    <div class="center">
-    <textarea id="textArea2" placeholder="type your link here..."></textarea>
-    </div>
-    </br>
-    <!--END-->
-
-    <!--按鈕設定-->
-    <div class="button-container">
-    <button style="font-size:25px; background-color:white; color:black; border-radius:25px; width:150px;">MP3</button>
-    <button style="font-size:25px; background-color:white; color:black; border-radius:25px; width:150px;">MP4</button>
-    <button style="font-size:25px; background-color:white; color:black; border-radius:25px; width:150px;">WMV</button>
-    <button style="font-size:25px; background-color:white; color:black; border-radius:25px; width:150px;">CLEAR</button>
-    </div>
-    </br>
-    <!--END-->
-
-    <!--大文字框設定-->
-    <div class="center">
-    <textarea id="textArea1" placeholder="MSG_block"></textarea>
-    </div>
-    <!--END-->
-
-    <img src="https://upload.wikimedia.org/wikipedia/commons/1/10/Black_cat.JPG" height="150px" width="200px" style="margin-left: 1100px;" >
     
-</html>
+    <body text="#ffffff" background-color="#E3E8EB">
+        <div class="custom-section">
+            <p>YT-downloader</p>
+        </div>
+        
+        <p class="color-text" style="text-align: center;">Free Online Video Downloader.</p>
+        <div class="center">
+            <textarea id="url" placeholder="type your link here..."></textarea>
+        </div>
+        
+        </br>
+
+        <div class="button-container">
+            <button id="mp3_btn" class="button">MP3</button>
+            <button id="mp4_btn" class="button">MP4</button>
+            <button id="wmv_btn" class="button">WMV</button>
+            <button id="clr_btn" class="button">CLEAR</button>
+        </div>
+
+        </br>
+
+        <div class="center">
+            <textarea id="textArea1" placeholder="MSG_block"></textarea>
+        </div>
+
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/10/Black_cat.JPG" height="150px" width="200px" style="margin-left: 1100px;" >
+    </body>
+</html> 

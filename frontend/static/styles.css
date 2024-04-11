@@ -1,0 +1,51 @@
+#textArea1 {
+    width:500px; 
+    height:300px;
+    font-size:20px;
+    resize: both;
+}
+
+#url{
+    width:600px;
+    height:30px;
+    border-radius:25px;
+    font-size:25px;
+    resize: both;
+}
+
+.center {
+    text-align:center;
+    margin-top:10px; 
+}
+
+.button-container {
+    text-align:center; 
+}
+
+.button-container button{
+    margin:15px; 
+}
+
+.custom-section {
+    background-color: #000000; 
+    padding:10px;
+    border-radius:20px;
+}
+
+body {
+    font-family:'La Belle Aurore', cursive;
+    font-size:25px;
+    margin-left:20px;
+}
+
+.color-text {
+    color: black;
+    font-size:35px;
+}
+.button{
+    font-size:25px; 
+    background-color:white; 
+    color:black; 
+    border-radius:25px; 
+    width:150px;
+}
