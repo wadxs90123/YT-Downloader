@@ -23,19 +23,19 @@
                 // 獲取輸入框中的 URL
                 var url = $("#url").val();
 
-                // 使用事件流接收進度信息
-                var eventSource = new EventSource("/progress", { method: "GET", withCredentials: true });
+                // // 使用事件流接收進度信息
+                // var eventSource = new EventSource("/progress", { method: "GET", withCredentials: true });
 
-                // 監聽事件流的 message 事件
-                eventSource.onmessage = function(event) {
-                    var data = parseInt(event.data);
-                    console.log("Received progress: " + data);
-                    $("#progressBar").attr("value", data);  // 更新進度條
-                    if (data >= 100) {
-                        console.log("Download complete");
-                        eventSource.close();  // 下載完成後關閉事件流
-                    }
-                };
+                // // 監聽事件流的 message 事件
+                // eventSource.onmessage = function(event) {
+                //     var data = parseInt(event.data);
+                //     console.log("Received progress: " + data);
+                //     $("#progressBar").attr("value", data);  // 更新進度條
+                //     if (data >= 100) {
+                //         console.log("Download complete");
+                //         eventSource.close();  // 下載完成後關閉事件流
+                //     }
+                // };
 
                 // 使用 AJAX 發送 POST 請求
                 $.ajax({
