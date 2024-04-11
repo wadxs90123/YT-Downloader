@@ -8,10 +8,10 @@ import os
 current_dir = os.path.dirname(os.path.abspath(__file__)) 
 sys.path.append(os.path.join(current_dir, '../api-server'))
  
+
+
+app = Flask(__name__, template_folder='../../frontend/', static_folder='../../frontend/static/')
  
-
-app = Flask(__name__)
-
 
 # 首頁
 @app.route('/')
