@@ -1,6 +1,5 @@
 # YT-Downloader
 NCKU-SE final project.
 
-### 大致流程 
-<img width="4976" alt="Untitled (3)" src="https://github.com/wadxs90123/YT-Downloader/assets/85378478/ead48cce-f3ab-4281-9f90-b018ca7fc848">
-<img width="4976" alt="Untitled (2)" src="https://github.com/wadxs90123/YT-Downloader/assets/85378478/3aacb76d-0750-430d-b1e4-f1add95c5c22">
+[專案介紹](https://github.com/wadxs90123/YT-Downloader/wiki/%E5%B0%88%E6%A1%88%E4%BB%8B%E7%B4%B9)
+[使用教學](https://github.com/wadxs90123/YT-Downloader/wiki/%E4%BD%BF%E7%94%A8%E6%95%99%E5%AD%B8)
