@@ -1,6 +1,9 @@
-api_server = process.env.API_SERVER || "http://localhost:8000";
+api_server = "https://yt-downloader-api-b5rs.onrender.com";
 src_type = null; 
 video_id = null;
+
+
+
 
 particlesJS.load('particles-js', 'static/particlesjs-config.json', function() {
     console.log('callback - particles.js config loaded');
