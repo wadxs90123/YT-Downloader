@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 api_server = "http://127.0.0.1:8000";
+=======
+api_server =  "http://127.0.0.1:8000"
+>>>>>>> Stashed changes
 src_type = null; 
 video_id = null;
 
@@ -64,22 +68,36 @@ $(document).ready(function() {
         }
 
         downloadReset();
+
+        // 禁止按鈕
+        $("#btn_submit").prop("disabled", true);
+        $("#btn_clear").prop("disabled", true);
+
+        // 顯示處理中訊息
+        var counter = 0;
+        var processInterval = setInterval(function(){
+            counter++;
+            var dots = ".".repeat(counter % 3 + 1);
+            $("#res-msg").val("Processing" + dots);
+        }, 500);
+
         // 使用 AJAX 發送 POST 請求
         $.ajax({
-            url: `${api_server}/download`,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ 
-                url: url,
-                type: src_type
-            })
+            url: `${api_server}/download?url=${encodeURIComponent(url)}&type=${src_type}`,
+            type: "GET" 
         }).then(function(data) {
             $("#res-msg").val(data.message);
             video_id = data.name;
             $("#download").prop("disabled", false);
+            $("#btn_submit").prop("disabled", false);
+            $("#btn_clear").prop("disabled", false);
+            clearInterval(processInterval);
         }).catch(function(err) {
             $("#res-msg").val(err.responseJSON.message);
             $("#download").prop("disabled", true);
+            $("#btn_submit").prop("disabled", false);
+            $("#btn_clear").prop("disabled", false);
+            clearInterval(processInterval);
         });
     });
     // 下載按鈕點擊事件
