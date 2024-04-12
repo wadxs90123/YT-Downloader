@@ -16,13 +16,15 @@ def downloadVideo(url, type, outputPath=None):
     Returns:
         videoPath (str): The path where the video file was saved.
         videoName (str): Filename which is randomly generated.
+        originalTitle (str): The original title of the YouTube video.
     """
     videoName = str(uuid.uuid4())
     if type == "wmv":
         copy = videoName
 
     yt = YouTube(url)
-    
+    originalTitle = yt.title
+
     # Get the highest resolution video stream
     if type == "mp4" or type == "wmv":
         # Add the file format after the video name based on type
@@ -52,7 +54,7 @@ def downloadVideo(url, type, outputPath=None):
         videoName = copy + ".wmv"
 
     print("Video downloaded successfully")
-    return videoName, videoPath
+    return videoName, videoPath, originalTitle
 
 """
 if __name__ == "__main__":

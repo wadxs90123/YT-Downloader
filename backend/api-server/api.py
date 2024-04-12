@@ -1,11 +1,14 @@
 import os, sys
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Request
+from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 
 current_dir = os.path.dirname(os.path.abspath(__file__)) 
 sys.path.append(os.path.join(current_dir, '../yt-downloader'))
 from downloader import downloadVideo 
+
+video_hash = {}
 
 app = FastAPI()
 
@@ -25,36 +28,52 @@ def hello_world():
 
 # download in the backend
 @app.post("/download")
-def download(url: str, type: str):
+async def download(request: Request): 
+    data = await request.json()
+    url = data.get("url")
+    type = data.get("type")
+  
     # 以固定的path去實作 
-    name, path = downloadVideo(url, type, "./videos/")
+     
+    try:
+        name, path, originalTitle = downloadVideo(url, type, "./videos/")
+        video_hash[name] = originalTitle
+    except:
+        return {"message": "Video download failed"}
     
     return {"message": "Video downloaded successfully",
             "name":{name}
             }
  
 # upload to user 
-@app.post("/video/{video_id}")
+@app.get("/video/{video_id}")
 async def read_item(video_id: str):
-    headers = {}
-    video_content = None
+    video_path = f"./videos/{video_id}"
+    if not os.path.exists(video_path):
+        return {"message": "Video not found"}
+    
+    content_type = get_content_type(video_id)
+    headers = {
+        "Content-Type": content_type,
+        "Content-Disposition": f"attachment; filename={video_id}"
+    }
+    return StreamingResponse(file_iterator(video_path), headers=headers)
+
+
+def get_content_type(video_id: str) -> str:
     if video_id.endswith(".mp4"):
-        headers["Content-Type"] = "video/mp4"
-        headers["Content-Disposition"] = "attachment; filename=video.mp4"
-        with open(f"./videos/{video_id}", "rb") as video_file:
-            video_content = video_file.read()
-        return Response(content=video_content, headers=headers)
+        return "video/mp4"
     elif video_id.endswith(".wmv"):
-        headers["Content-Type"] = "video/x-ms-wmv"
-        headers["Content-Disposition"] = "attachment; filename=video.wmv"
-        with open(f"./videos/{video_id}", "rb") as video_file:
-            video_content = video_file.read()
-        return Response(content=video_content, headers=headers)
+        return "video/x-ms-wmv"
     elif video_id.endswith(".mp3"):
-        headers["Content-Type"] = "video/mp3"
-        headers["Content-Disposition"] = "attachment; filename=video.mp3"
-        with open(f"./videos/{video_id}", "rb") as video_file:
-            video_content = video_file.read()
-        return Response(content=video_content, headers=headers)
+        return "audio/mpeg"
     else:
-        return {"message": "Invalid video type"}
+        return "application/octet-stream"
+
+def file_iterator(file_path: str, chunk_size: int = 8192):
+    with open(file_path, "rb") as file:
+        while True:
+            chunk = file.read(chunk_size)
+            if not chunk:
+                break
+            yield chunk

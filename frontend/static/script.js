@@ -1,72 +1,126 @@
-type = null;
-/* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
+api_server = "http://127.0.0.1:8000";
+src_type = null; 
+video_id = null;
+
 particlesJS.load('particles-js', 'static/particlesjs-config.json', function() {
     console.log('callback - particles.js config loaded');
 });
 
-$(document).ready(function() {
+function downloadReset(){
+    $("#download").prop("disabled", true);
+    $("#res-msg").val(""); 
+}
+
+function changeStyle(clickedButton) {
+    var buttons = document.querySelectorAll('.mybtn'); 
+     
+    buttons.forEach(function(button) {
+        if (button === clickedButton) { 
+            button.classList.add('mybtn-active');
+            src_type = button.textContent.toLowerCase();
+        } else { 
+            button.classList.remove('mybtn-active');
+        }
+    });
+}
+
+
+$(document).ready(function() {    
+    document.getElementById('download').addEventListener("change", function() {
+        if (this.disabled) {
+            this.style.cursor = "not-allowed";
+        } else {
+            this.style.cursor = "pointer";
+        }
+    });
+
+    // 移除按鈕的焦點
     $(".navbar-toggler").click(function() {
-        // 移除按钮的焦点
         $(this).blur();
     });
-});
-
-$(document).ready(function() {
-    // 綁定按鈕點擊事件
-    $("#mp3_btn").click(function() {
-        // 獲取輸入框中的 URL
-        var url = $("#url").val();
-
-        // 使用 AJAX 發送 GET 請求
-        $.ajax({
-            url: "http://localhost:8000/",
-            type: "GET",
-            data: { 
-                url: url,
-                type: "mp3"
-            }
-        }).then(function(data) {
-            $("#res_msg").val(data.message);
-        });
-    });
-});
-
-$(document).ready(function() {
-    $(".button").click(function() {
-        // 將所有按鈕恢復原始樣式
-        $(".button").removeClass("active");
-        
-        type = $(this).text();
-
-        // 將點擊的按鈕添加 active 類，改變其外觀
-        $(this).addClass("active");
-    });
-});
-
-$(document).ready(function() {
-    $("#clr_btn").click(function() {
-        $(".button").removeClass("active");
-        type = null;
+    
+    // 綁定清除按鈕點擊事件
+    $("#btn_clear").click(function() {
+        $(".mybtn").removeClass("mybtn-active");
+        src_type = null; 
+        video_id = null;
         $("#url").val("");
+        downloadReset();
     });
-});
 
-$(document).ready(function() {
-    $("#submit_btn").click(function() {
+    // 綁定按鈕點擊事件
+    $("#btn_submit").click(function() {
+        if(src_type == null){
+            alert("Please select a type!");
+            return;
+        }
         // 獲取輸入框中的 URL
         var url = $("#url").val();
 
-        // 使用 AJAX 發送 GET 請求
+        // 如果 URL 為空，則提示用戶輸入 URL
+        if(url == ""){
+            alert("Please input a URL!");
+            return;
+        }
+
+        downloadReset();
+        // 使用 AJAX 發送 POST 請求
         $.ajax({
-            url: "http://localhost:8000/",
-            type: "GET",
-            data: { 
+            url: `${api_server}/download`,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ 
                 url: url,
-                type: type
-            }
+                type: src_type
+            })
         }).then(function(data) {
-            $("#res_msg").val(data.message);
+            $("#res-msg").val(data.message);
+            video_id = data.name;
+            $("#download").prop("disabled", false);
+        }).catch(function(err) {
+            $("#res-msg").val(err.responseJSON.message);
+            $("#download").prop("disabled", true);
+        });
+    });
+    // 下載按鈕點擊事件
+    $("#download").click(function() {
+        if ($(this).prop("disabled") || video_id == null) {
+            return;
+        }
+    
+        $.ajax({
+            url: `${api_server}/video/${video_id}`,
+            type: "GET",
+            xhrFields: {
+                responseType: 'blob'  
+            }
+        }).then(function(response, status, xhr) {
+            var contentType = xhr.getResponseHeader('Content-Type');  
+            var extension = contentType.split('/')[1];  
+            if(extension == "mpeg"){
+                extension = "mp3";
+            }else if(extension == "x-ms-wmv"){
+                extension = "wmv";
+            }
+            var fileName = `video.${extension}`;  
+     
+            var blob = new Blob([response], { type: contentType });
+            var blobURL = window.URL.createObjectURL(blob);
+    
+             
+            var a = document.createElement('a');
+            a.href = blobURL;
+            a.download = fileName; 
+    
+          
+            a.click();
+     
+            window.URL.revokeObjectURL(blobURL);
+        }).catch(function(err) {
+            $("#res-msg").val(err.responseJSON.message);
+            $("#download").prop("disabled", true);
         });
     });
 });
+  
  

@@ -46,22 +46,22 @@
             <h1 class="inter-font" style="padding-top: 5%; font-size: 36px; font-weight: bolder;color: #333333;">Free Online Video Downloader.</h1>
             <div class="input-container">
                 <input type="text" id="url" placeholder="type your link here..." class="url">
-                <button id="download" class="download-button"></button>
+                <button disabled="true" id="download" class="download-button"></button>
             </div>
             <div class="btn-group" style="margin-top: 5vh;" role="group" aria-label="Basic example">
-                <button type="button" class="mybtn inter-font">MP3</button>
-                <button type="button" class="mybtn inter-font">MP4</button>
-                <button type="button" class="mybtn inter-font">WMV</button>
+                <button id="btn_mp3" onclick="changeStyle(this)" type="button" class="mybtn inter-font">MP3</button>
+                <button id="btn_mp4" onclick="changeStyle(this)" type="button" class="mybtn inter-font">MP4</button>
+                <button id="btn_wmv" onclick="changeStyle(this)" type="button" class="mybtn inter-font">WMV</button>
             </div>
             </br>
             <div class="btn-group" style="margin-top: 5vh;" role="group" aria-label="Basic example">
-                <button type="button" class="mybtn_submit inter-font">SUBMIT</button>
-                <button type="button" class="mybtn_submit inter-font">CLEAR</button>
+                <button id="btn_submit" type="button" class="mybtn_submit inter-font">SUBMIT</button>
+                <button id="btn_clear" type="button" class="mybtn_submit inter-font">CLEAR</button>
             </div>
             </br>
             <div class="res-container">
                 <img src="/static/images/msg_block.png">
-                <textarea class="res-msg" disabled="true" placeholder="No response message now..."></textarea>
+                <textarea id="res-msg" class="res-msg" disabled="true" placeholder="No response message now..."></textarea>
                 <img src="/static/images/cat-in-black-silhouette.png" style="width: 250px; height: 250px">
             </div>
         </div>
