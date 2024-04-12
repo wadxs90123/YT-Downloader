@@ -15,7 +15,7 @@ app = FastAPI()
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5000",os.environ.get("FRONTEND_URL")],
+    allow_origins=["http://127.0.0.1:4000",os.environ.get("FRONTEND_URL")],
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
@@ -27,11 +27,11 @@ def hello_world():
     return {"message": "Hello World"}
 
 # download in the backend
-@app.post("/download")
-async def download(request: Request): 
-    data = await request.json()
-    url = data.get("url")
-    type = data.get("type")
+@app.get("/download")
+async def download(url: str, type: str): 
+    # data = await request.json()
+    # url = data.get("url")
+    # type = data.get("type")
   
     # 以固定的path去實作 
      

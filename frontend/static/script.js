@@ -1,4 +1,4 @@
-api_server = "https://yt-downloader-api-b5rs.onrender.com";
+api_server = "https://yt-downloader-api-b5rs.onrender.com";//"http://127.0.0.1:8000"
 src_type = null; 
 video_id = null;
 
@@ -69,13 +69,8 @@ $(document).ready(function() {
         downloadReset();
         // 使用 AJAX 發送 POST 請求
         $.ajax({
-            url: `${api_server}/download`,
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ 
-                url: url,
-                type: src_type
-            })
+            url: `${api_server}/download?url=${url}&type=${src_type}`,
+            type: "GET" 
         }).then(function(data) {
             $("#res-msg").val(data.message);
             video_id = data.name;
