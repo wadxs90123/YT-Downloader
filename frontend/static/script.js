@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-api_server = "https://yt-downloader-api-b5rs.onrender.com";//"http://127.0.0.1:8000"
-=======
 api_server = "http://34.81.240.50:8000"
->>>>>>> Stashed changes
 src_type = null; 
 video_id = null;
 
