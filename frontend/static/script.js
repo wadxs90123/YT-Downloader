@@ -1,4 +1,4 @@
-api_server = "http://127.0.0.1:8000";
+api_server = process.env.API_SERVER || "http://localhost:8000";
 src_type = null; 
 video_id = null;
 
