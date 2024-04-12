@@ -44,8 +44,12 @@ async def download(request: Request):
     return {"message": "Video downloaded successfully",
             "name":{name}
             }
- 
-# upload to user 
+@app.get("/video/{video_id}/name")
+async def get_video_name(video_id: str):
+    if video_id not in video_hash:
+        return {"message": "Video not found"}
+    return {"name": video_hash.get(video_id),"message":"Success"}
+# 上傳給使用者 
 @app.get("/video/{video_id}")
 async def read_item(video_id: str):
     video_path = f"./videos/{video_id}"
@@ -57,9 +61,9 @@ async def read_item(video_id: str):
         "Content-Type": content_type,
         "Content-Disposition": f"attachment; filename={video_id}"
     }
-    return StreamingResponse(file_iterator(video_path), headers=headers)
+    return StreamingResponse(file_iterator(video_path), headers=headers) # 以streaming的方式去實作
 
-
+# 取得檔案的類型
 def get_content_type(video_id: str) -> str:
     if video_id.endswith(".mp4"):
         return "video/mp4"
@@ -70,10 +74,11 @@ def get_content_type(video_id: str) -> str:
     else:
         return "application/octet-stream"
 
+# 以streaming的方式去實作
 def file_iterator(file_path: str, chunk_size: int = 8192):
     with open(file_path, "rb") as file:
         while True:
             chunk = file.read(chunk_size)
-            if not chunk:
+            if not chunk: 
                 break
             yield chunk

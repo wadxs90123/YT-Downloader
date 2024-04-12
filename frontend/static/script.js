@@ -87,39 +87,51 @@ $(document).ready(function() {
         if ($(this).prop("disabled") || video_id == null) {
             return;
         }
-    
+        
         $.ajax({
-            url: `${api_server}/video/${video_id}`,
+            url: `${api_server}/video/${video_id}/name`,
             type: "GET",
-            xhrFields: {
-                responseType: 'blob'  
+        }).then(function(data) {
+            if(data.message != "Success"){
+                $("#res-msg").val(data.message);
+                return;
             }
-        }).then(function(response, status, xhr) {
-            var contentType = xhr.getResponseHeader('Content-Type');  
-            var extension = contentType.split('/')[1];  
-            if(extension == "mpeg"){
-                extension = "mp3";
-            }else if(extension == "x-ms-wmv"){
-                extension = "wmv";
-            }
-            var fileName = `video.${extension}`;  
-     
-            var blob = new Blob([response], { type: contentType });
-            var blobURL = window.URL.createObjectURL(blob);
-    
-             
-            var a = document.createElement('a');
-            a.href = blobURL;
-            a.download = fileName; 
-    
+            var originalName = data.name;
+            var originalName = originalName.replace(/ /g, "_");//把空格替換成底線
           
-            a.click();
-     
-            window.URL.revokeObjectURL(blobURL);
-        }).catch(function(err) {
-            $("#res-msg").val(err.responseJSON.message);
-            $("#download").prop("disabled", true);
-        });
+            $.ajax({
+                url: `${api_server}/video/${video_id}`,
+                type: "GET",
+                xhrFields: {
+                    responseType: 'blob'  
+                }
+            }).then(function(response, status, xhr) {
+                var contentType = xhr.getResponseHeader('Content-Type');  
+                var extension = contentType.split('/')[1];  
+                if(extension == "mpeg"){
+                    extension = "mp3";
+                }else if(extension == "x-ms-wmv"){
+                    extension = "wmv";
+                }
+                var fileName = `${originalName}.${extension}`;  
+        
+                var blob = new Blob([response], { type: contentType });
+                var blobURL = window.URL.createObjectURL(blob);
+        
+                
+                var a = document.createElement('a');
+                a.href = blobURL;
+                a.download = fileName; 
+        
+            
+                a.click();
+        
+                window.URL.revokeObjectURL(blobURL);
+            }).catch(function(err) {
+                $("#res-msg").val(err.responseJSON.message);
+                $("#download").prop("disabled", true);
+            });
+        }); 
     });
 });
   
