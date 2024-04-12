@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request, Response, jsonify
 import time
 import sys 
-import os  
-from gevent import pywsgi
+import os   
 
 #TODO Garbage collection (remove downloaded files)
 
@@ -22,6 +21,4 @@ def index():
  
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 4000)) 
-    server = pywsgi.WSGIServer(('0.0.0.0', port), app)
-    server.serve_forever()
+    app.run(debug=True, host='0.0.0.0', port=5000)
