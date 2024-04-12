@@ -1,10 +1,9 @@
-<<<<<<< Updated upstream
-api_server = "http://127.0.0.1:8000";
-=======
-api_server =  "http://127.0.0.1:8000"
->>>>>>> Stashed changes
+api_server = "https://yt-downloader-api-b5rs.onrender.com";//"http://127.0.0.1:8000"
 src_type = null; 
 video_id = null;
+
+
+
 
 particlesJS.load('particles-js', 'static/particlesjs-config.json', function() {
     console.log('callback - particles.js config loaded');
@@ -82,7 +81,7 @@ $(document).ready(function() {
         }, 500);
 
         // 使用 AJAX 發送 POST 請求
-        $.ajax({
+        $.ajax({ 
             url: `${api_server}/download?url=${encodeURIComponent(url)}&type=${src_type}`,
             type: "GET" 
         }).then(function(data) {
