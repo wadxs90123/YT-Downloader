@@ -1,4 +1,4 @@
-api_server = "http://34.81.240.50:8000"
+api_server = "https://chengsi.ddns.net";
 src_type = null; 
 video_id = null;
 
