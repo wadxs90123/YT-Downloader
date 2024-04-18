@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, socket
 from fastapi import FastAPI, Response, Request
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 current_dir = os.path.dirname(os.path.abspath(__file__)) 
 sys.path.append(os.path.join(current_dir, '../yt-downloader'))
-from downloader import downloadVideo 
+from downloader import downloadVideo
 
 video_hash = {}
 
@@ -38,12 +38,14 @@ async def download(url: str, type: str):
     try:
         name, path, originalTitle = downloadVideo(url, type, "./videos/")
         video_hash[name] = originalTitle
-    except:
+    except Exception as e : 
+        print(e)
         return {"message": "Video download failed"}
     
     return {"message": "Video downloaded successfully",
             "name":{name}
             }
+
 @app.get("/video/{video_id}/name")
 async def get_video_name(video_id: str):
     if video_id not in video_hash:
