@@ -2,6 +2,28 @@ from pytube import YouTube
 import uuid
 from moviepy.editor import VideoFileClip
 import os
+import threading
+import socket
+import websocket
+
+progress = 0
+def sendprogress() :
+    # Create WebSocket connection
+    ws_uri = 'ws://localhost:8765'
+    ws = websocket.WebSocket()
+    ws.connect(ws_uri)
+    # 发送消息给服务器
+    ws.send(str(progress))
+    ws.close()
+
+def onprogress(stream, chunk, remains):
+    global progress
+    total = stream.filesize                     # 取得完整尺寸
+    percent = (total - remains) / total * 100     # 減去剩餘尺寸 ( 剩餘尺寸會抓取存取的檔案大小 )
+    print(f'下載中… {percent:05.2f}')  # 顯示進度，\r 表示不換行，在同一行更新
+    progress = int(percent)
+
+    sendprogress()
 
 def downloadVideo(url, type, outputPath=None):
     """
@@ -18,11 +40,15 @@ def downloadVideo(url, type, outputPath=None):
         videoName (str): Filename which is randomly generated.
         originalTitle (str): The original title of the YouTube video.
     """
+    
+    global progress
+    progress = 0
+    sendprogress()
+
     videoName = str(uuid.uuid4())
     if type == "wmv":
         copy = videoName
-
-    yt = YouTube(url)
+    yt = YouTube(url , on_progress_callback = onprogress)
     originalTitle = yt.title
 
     # Get the highest resolution video stream
@@ -33,7 +59,7 @@ def downloadVideo(url, type, outputPath=None):
     elif type == "mp3":
         videoName += ".mp3"
         videoStream = yt.streams.filter(only_audio=True).first()
-    
+
     # Download the video
     if outputPath:
         videoPath = outputPath
@@ -41,6 +67,9 @@ def downloadVideo(url, type, outputPath=None):
     else:
         videoPath = os.getcwd()
         videoStream.download(filename=videoName)
+
+    progress = 99
+    sendprogress()
 
     # Use moviepy to convert video file from MP4 to WMV
     if type == "wmv":
@@ -54,7 +83,7 @@ def downloadVideo(url, type, outputPath=None):
         videoName = copy + ".wmv"
 
     print("Video downloaded successfully")
-    return videoName, videoPath, originalTitle
+    return videoName , videoPath , originalTitle
 
 """
 if __name__ == "__main__":
