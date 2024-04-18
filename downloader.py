@@ -25,16 +25,25 @@ def onprogress(stream, chunk, remains):
 
     sendprogress()
 
-videoName = ""
-videoPath = ""
-originalTitle = ""
-def downloadVideo_thread (url, type, outputPath=None) :
+def downloadVideo(url, type, outputPath=None):
+    """
+    Downloads a YouTube video from the given URL.
+    
+    Args:
+        url (str): The URL of the YouTube video.
+        type (str): The type of download file, can be MP4, WMV, or MP3.
+        output_path (str, optional): The path to save the downloaded video file.
+            If not provided, the video will be saved in the current directory.
+    
+    Returns:
+        videoPath (str): The path where the video file was saved.
+        videoName (str): Filename which is randomly generated.
+        originalTitle (str): The original title of the YouTube video.
+    """
+    
     global progress
     progress = 0
     sendprogress()
-    global videoName
-    global videoPath
-    global originalTitle
 
     videoName = str(uuid.uuid4())
     if type == "wmv":
@@ -73,27 +82,7 @@ def downloadVideo_thread (url, type, outputPath=None) :
             os.remove(videoName)
         videoName = copy + ".wmv"
 
-    sendprogress()
     print("Video downloaded successfully")
-
-
-def downloadVideo(url, type, outputPath=None):
-    """
-    Downloads a YouTube video from the given URL.
-    
-    Args:
-        url (str): The URL of the YouTube video.
-        type (str): The type of download file, can be MP4, WMV, or MP3.
-        output_path (str, optional): The path to save the downloaded video file.
-            If not provided, the video will be saved in the current directory.
-    
-    Returns:
-        videoPath (str): The path where the video file was saved.
-        videoName (str): Filename which is randomly generated.
-        originalTitle (str): The original title of the YouTube video.
-    """
-    
-    downloadVideo_thread(url , type , outputPath)
     return videoName , videoPath , originalTitle
 
 """

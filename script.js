@@ -80,9 +80,6 @@ $(document).ready(function() {
             $("#res-msg").val("Processing" + dots);
         }, 500);
 
-
-
-
         var progressInterval = setInterval(function(){
             // Create WebSocket connection
             var ws = new WebSocket('ws://localhost:8765') 
@@ -100,53 +97,31 @@ $(document).ready(function() {
                         clearInterval(progressInterval);
                     }
                     console.log(`[Message from server]:\n %c${event.data}` , 'color: blue')
+                    ws.close() ;
                 }
             }
         }, 500);
 
-
-
-        // var progressInterval = setInterval(function(){
-
-        //     }).then(function(data) {
-        //         $("#progress").val(data.message); 
-        //     }).catch(function(err) {
-        //         $("#progress").val("無法得到"); 
-        //     });
-        // }, 500);
-
-        // Promise.all ([
-
-            $.ajax({ 
-                url: `${api_server}/download?url=${encodeURIComponent(url)}&type=${src_type}`,
-                type: "GET" 
-            }).then(function(data) {
-                sleep(1000)
-                $("#res-msg").val(data.message);
-                video_id = data.name;
-                $("#download").prop("disabled", false);
-                $("#btn_submit").prop("disabled", false);
-                $("#btn_clear").prop("disabled", false);
-                clearInterval(processInterval);
-                $("#progress-bar").val(100);
-                clearInterval(progressInterval);
-            }).catch(function(err) {
-                sleep(1000)
-                $("#res-msg").val(err.responseJSON.message);
-                $("#download").prop("disabled", true);
-                $("#btn_submit").prop("disabled", false);
-                $("#btn_clear").prop("disabled", false);
-                clearInterval(processInterval);
-                clearInterval(progressInterval);
-            }) ;
-
-
-            // progress_ajax() ,
-        // ])
-
-
-
-
+        $.ajax({ 
+            url: `${api_server}/download?url=${encodeURIComponent(url)}&type=${src_type}`,
+            type: "GET" 
+        }).then(function(data) {
+            $("#res-msg").val(data.message);
+            video_id = data.name;
+            $("#download").prop("disabled", false);
+            $("#btn_submit").prop("disabled", false);
+            $("#btn_clear").prop("disabled", false);
+            clearInterval(processInterval);
+            $("#progress-bar").val(100);
+            clearInterval(progressInterval);
+        }).catch(function(err) {
+            $("#res-msg").val(err.responseJSON.message);
+            $("#download").prop("disabled", true);
+            $("#btn_submit").prop("disabled", false);
+            $("#btn_clear").prop("disabled", false);
+            clearInterval(processInterval);
+            clearInterval(progressInterval);
+        }) ;
     });
 
     // 下載按鈕點擊事件
@@ -201,45 +176,3 @@ $(document).ready(function() {
         }); 
     });    
 });
-  
-async function progress_ajax() {
-    return setInterval(function(){
-        $.ajax({ 
-            url: `${api_server}/progress`,
-            type: "GET"
-        }).then(function(data) {
-            $("#progress").val(data.message); 
-        }).catch(function(err) {
-            $("#progress").val("無法得到"); 
-        });
-    }, 500);
-    // return $.ajax({ 
-    //         url: `${api_server}/progress`,
-    //         type: "GET"
-    //     }).then(function(data) {
-    //         $("#progress").val(data.message); 
-    //     }).catch(function(err) {
-    //         $("#progress").val("無法得到"); 
-    //     });
-}
-
-function download_ajax() {
-    // 使用 AJAX 發送 POST 請求
-    return $.ajax({ 
-        url: `${api_server}/download?url=${encodeURIComponent(url)}&type=${src_type}`,
-        type: "GET" 
-    }).then(function(data) {
-        $("#res-msg").val(data.message);
-        video_id = data.name;
-        $("#download").prop("disabled", false);
-        $("#btn_submit").prop("disabled", false);
-        $("#btn_clear").prop("disabled", false);
-        clearInterval(processInterval);
-    }).catch(function(err) {
-        $("#res-msg").val(err.responseJSON.message);
-        $("#download").prop("disabled", true);
-        $("#btn_submit").prop("disabled", false);
-        $("#btn_clear").prop("disabled", false);
-        clearInterval(processInterval);
-    });
-}
