@@ -7,13 +7,15 @@ import socket
 import websocket
 
 progress = 0
+id = ""
 def sendprogress() :
     # Create WebSocket connection
     ws_uri = 'ws://localhost:8765'
     ws = websocket.WebSocket()
     ws.connect(ws_uri)
     # 发送消息给服务器
-    ws.send(str(progress))
+    response_string = str(progress) + "," + id
+    ws.send( response_string )
     ws.close()
 
 def onprogress(stream, chunk, remains):
@@ -25,7 +27,7 @@ def onprogress(stream, chunk, remains):
 
     sendprogress()
 
-def downloadVideo(url, type, outputPath=None):
+def downloadVideo(url, type, clent_id, outputPath=None):
     """
     Downloads a YouTube video from the given URL.
     
@@ -34,6 +36,7 @@ def downloadVideo(url, type, outputPath=None):
         type (str): The type of download file, can be MP4, WMV, or MP3.
         output_path (str, optional): The path to save the downloaded video file.
             If not provided, the video will be saved in the current directory.
+        clent_id (str): The client id.
     
     Returns:
         videoPath (str): The path where the video file was saved.
@@ -43,6 +46,8 @@ def downloadVideo(url, type, outputPath=None):
     
     global progress
     progress = 0
+    global id
+    id = clent_id
     sendprogress()
 
     videoName = str(uuid.uuid4())
@@ -68,7 +73,8 @@ def downloadVideo(url, type, outputPath=None):
         videoPath = os.getcwd()
         videoStream.download(filename=videoName)
 
-    progress = 99
+    if(type == "wmv") :
+        progress = 99
     sendprogress()
 
     # Use moviepy to convert video file from MP4 to WMV
@@ -82,6 +88,7 @@ def downloadVideo(url, type, outputPath=None):
             os.remove(videoName)
         videoName = copy + ".wmv"
 
+    sendprogress()
     print("Video downloaded successfully")
     return videoName , videoPath , originalTitle
 
