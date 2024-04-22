@@ -28,7 +28,7 @@ def hello_world():
 
 # download in the backend
 @app.get("/download")
-async def download(url: str, type: str): 
+async def download(url: str, type: str, id: str): 
     # data = await request.json()
     # url = data.get("url")
     # type = data.get("type")
@@ -36,7 +36,7 @@ async def download(url: str, type: str):
     # 以固定的path去實作 
      
     try:
-        name, path, originalTitle = downloadVideo(url, type, "./videos/")
+        name, path, originalTitle = downloadVideo(url, type, id, "./videos/")
         video_hash[name] = originalTitle
     except Exception as e : 
         print(e)
@@ -51,6 +51,7 @@ async def get_video_name(video_id: str):
     if video_id not in video_hash:
         return {"message": "Video not found"}
     return {"name": video_hash.get(video_id),"message":"Success"}
+
 # 上傳給使用者 
 @app.get("/video/{video_id}")
 async def read_item(video_id: str):

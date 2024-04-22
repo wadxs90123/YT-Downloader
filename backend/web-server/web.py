@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, Response, jsonify
 import time
 import sys 
-import os   
+import os
+from progress import run_socket_server
 
 #TODO Garbage collection (remove downloaded files)
 
@@ -21,4 +22,5 @@ def index():
  
 
 if __name__ == '__main__':
+    # run_socket_server()
     app.run(debug=True, host='0.0.0.0', port=5000)

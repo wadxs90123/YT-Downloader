@@ -1,11 +1,17 @@
 api_server = "http://127.0.0.1:8000"
-api2_server = "http://127.0.0.1:4000"
 src_type = null; 
 video_id = null;
+id = "" ;
 
+var ws
 
-function sleep (time) {
-    return new Promise((resolve) => setTimeout(resolve, time));
+// 生成獨特id
+function guid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
 }
 
 particlesJS.load('particles-js', 'static/particlesjs-config.json', function() {
@@ -30,7 +36,17 @@ function changeStyle(clickedButton) {
     });
 }
 
-$(document).ready(function() {    
+$(document).ready(function() {
+    // Create WebSocket connection
+    ws = new WebSocket('ws://localhost:8765') 
+    // 在開啟連線時執行
+    ws.addEventListener("open", (event) => {
+        id = guid() ;
+        response_string = "Hello," + id
+        ws.send( response_string );
+        console.log(id) ;
+    });
+
     document.getElementById('download').addEventListener("change", function() {
         if (this.disabled) {
             this.style.cursor = "not-allowed";
@@ -80,30 +96,22 @@ $(document).ready(function() {
             $("#res-msg").val("Processing" + dots);
         }, 500);
 
-        var progressInterval = setInterval(function(){
-            // Create WebSocket connection
-            var ws = new WebSocket('ws://localhost:8765') 
-            // 在開啟連線時執行
-            ws.onopen = () => {
-                console.log('[open connection]')
-                ws.send("hello server!!!")
-                // Listen for messages from Server
-                ws.onmessage = event => {
-                    // $("#progress").val(event.data);
-                    $("#progress-bar").val(parseInt(event.data));
-                    if(src_type == "wmv" && event.data == 99) {
-                        $("#res-msg").val("convert to wmv...");
-                        clearInterval(processInterval);
-                        clearInterval(progressInterval);
-                    }
-                    console.log(`[Message from server]:\n %c${event.data}` , 'color: blue')
-                    ws.close() ;
+        // 監聽 message
+        ws.addEventListener("message", (event) => {
+            console.log("Message from server ", event.data) ;
+            var arr = event.data.split(',')
+            if(arr[1] == id) {
+                if(src_type == "wmv" && parseInt(arr[0]) == 100) {
+                    clearInterval(processInterval)
+                    $("#res-msg").val("Converting to WMV...");
+                    $("#progress-bar").val(99);
                 }
+                else $("#progress-bar").val(parseInt(arr[0]));
             }
-        }, 500);
+        });
 
         $.ajax({ 
-            url: `${api_server}/download?url=${encodeURIComponent(url)}&type=${src_type}`,
+            url: `${api_server}/download?url=${encodeURIComponent(url)}&type=${src_type}&id=${id}`,
             type: "GET" 
         }).then(function(data) {
             $("#res-msg").val(data.message);
@@ -111,16 +119,14 @@ $(document).ready(function() {
             $("#download").prop("disabled", false);
             $("#btn_submit").prop("disabled", false);
             $("#btn_clear").prop("disabled", false);
-            clearInterval(processInterval);
+            if(src_type != "wmv") clearInterval(processInterval);
             $("#progress-bar").val(100);
-            clearInterval(progressInterval);
         }).catch(function(err) {
             $("#res-msg").val(err.responseJSON.message);
             $("#download").prop("disabled", true);
             $("#btn_submit").prop("disabled", false);
             $("#btn_clear").prop("disabled", false);
             clearInterval(processInterval);
-            clearInterval(progressInterval);
         }) ;
     });
 
@@ -174,5 +180,12 @@ $(document).ready(function() {
                 $("#download").prop("disabled", true);
             });
         }); 
-    });    
+    });
+
+    window.onbeforeunload = function() {
+        // 關閉頁面
+        response_string = "goodbye," + id
+        ws.send( response_string );
+        ws.close() ;
+    };
 });
